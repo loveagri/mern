@@ -186,7 +186,7 @@ ___
     ```shell script
     sudo apt install -y nginx
     ```
-4. Set nginx configs
+4. Set nginx configs, then we can user reverse proxy to hide our backend server, another reason is that we can hot update our project without shutdown server.
     ```shell script
     sudo vim /etc/nginx/conf.d/server.conf
     ```
