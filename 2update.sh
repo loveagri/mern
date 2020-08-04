@@ -28,13 +28,13 @@ docker pull $FULL_IMAGE_NAME
 echo '---------------image pull finished---------------'
 
 ImageId=`docker images | grep -E $HUB_APP | grep -E $VERSION | awk '{print $3}'`
-echo "image id: $ImageId"
+echo "image id: '$ImageId'"
 
 if [ $ImageId = '' ]; then
     echo "---------------pull $FULL_IMAGE_NAME failed---------------"
     exit
 else
-    echo "old server backup removed"
+    echo "successfully pull $FULL_IMAGE_NAME from hub"
 fi
 
 docker rm -f backup
