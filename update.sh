@@ -1,13 +1,20 @@
 #!/usr/bin/env bash
 
-LAST_IMAGE=`cat .lastImage.txt`
+LAST_IMAGE=`cat /home/fuhong_tang_china/.lastImage.txt`
 echo "read last version image info successfully"
+
+FULL_APP_NAME=$1
 
 if [[ $1 = '' ]];
 then
-  FULL_APP_NAME=$LAST_IMAGE
-else
-  FULL_APP_NAME=$1
+  echo "nee a full version info"
+  exit
+fi
+
+if [[ $FULL_APP_NAME = $LAST_IMAGE ]];
+then
+  echo "last version is same with new new version, don't update"
+  exit
 fi
 
 buildLog=`docker pull $FULL_APP_NAME | grep 'Digest: sha256:' `
@@ -17,7 +24,6 @@ echo 'image pull finished'
 echo $buildLog
 
 ImageId=`echo $buildLog |  grep 'Digest: sha256:'|sed -r "s/Digest: sha256:(.*)/\1/g"`
-echo $ImageId > .imageID.txt
 echo "image id: $ImageId"
 
 docker rm -f backup
@@ -41,7 +47,7 @@ echo "server mern2 started"
 docker rmi $LAST_IMAGE
 echo "old image removed"
 
-echo $FULL_APP_NAME > .lastImage.txt
+echo $FULL_APP_NAME > /home/fuhong_tang_china/.lastImage.txt
 echo "new image info written successfully"
 
 echo "deploy finished"
