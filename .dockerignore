@@ -14,3 +14,5 @@ client
 .dockerpwd
 deploy.sh
 update.sh
+deploy-readme.sh
+update-readme.sh

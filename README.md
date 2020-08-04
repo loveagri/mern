@@ -102,9 +102,11 @@ ___
     .env
     client
     !client/build/
-    .dockepwd
+    .dockerpwd
     deploy.sh
     update.sh
+    deploy-readme.sh
+    update-readme.sh
     ```
 2. build `Dockerfile` file
     ```shell script
@@ -121,48 +123,90 @@ ___
 1. deploy.sh, don't forget to set you server user and ip or domain, your docker hub name, app name and 
     ```shell script
     #!/bin/bash
-        
-        HUB="hub username"
-        APP="project name"
-        
-        if [[ $1 = '' ]];
-        then
-          VERSION="latest"
-        else
-          VERSION=$1
-        fi
-        
-        #join full app name
-        FULL_IMAGE_NAME="$HUB/$APP:$VERSION"
-        echo "---------------full name: $FULL_IMAGE_NAME---------------"
-        
-        #recover unsubmit code
-        git checkout .
-        echo '---------------finish checkout---------------'
-        
-        #pull from remote repository
-        git pull
-        echo '---------------finish pull from remote repository---------------'
-        
-        #install modules and package code of client
-        yarn install
-        yarn heroku-postbuild
-        echo "---------------finish install js libraries and build project---------------"
-        
-        docker build -t $FULL_IMAGE_NAME .
-        echo "---------------finish build docker image---------------"
-        
-        docker logout
+    
+    HUB="g6219700"
+    APP="love"
+    
+    if [[ $1 = '' ]];
+    then
+      echo "---------------please offer project version---------------"
+      exit
+    else
+      VERSION=$1
+    fi
+    
+    #join full app name
+    FULL_IMAGE_NAME="$HUB/$APP:$VERSION"
+    echo "---------------full name: $FULL_IMAGE_NAME---------------"
+    
+    #recover unsubmit code
+    git checkout .
+    echo "---------------finish checkout---------------"
+    
+    #pull from remote repository
+    git pull
+    echo "---------------finish pull from remote repository---------------"
+    
+    #install modules and package code of client
+    yarn install
+    yarn heroku-postbuild
+    echo "---------------finish install js libraries and build project---------------"
+    
+    echo "---------------start to build docker image......---------------"
+    docker build -t $FULL_IMAGE_NAME .
+    if [ $? -ne 0 ]; then
+        echo "---------------build docker image failed---------------"
+        exit
+    else
+        echo "---------------build docker image successfully--------------"
+    fi
+    
+    docker logout
+    if [ $? -ne 0 ]; then
+        echo "---------------logout docker failed, that's fine---------------"
+    else
         echo "---------------logout docker successfully---------------"
-        
-        cat .dockepwd | docker login --username g6219700 --password-stdin
+    fi
+    
+    cat .dockerpwd | docker login --username g6219700 --password-stdin
+    if [ $? -ne 0 ]; then
+        echo "---------------login docker failed---------------"
+        exit
+    else
         echo "---------------login docker successfully---------------"
-        
-        docker push $FULL_IMAGE_NAME
-        echo "---------------push to docker hub successfully---------------"
-        
-        ssh user@server.ip  /bin/bash /home/fuhong_tang_china/update.sh "$HUB/$APP" $VERSION
-        echo "---------------login to remote server successfully---------------"
+    fi
+    
+    docker push $FULL_IMAGE_NAME
+    if [ $? -ne 0 ]; then
+        echo "---------------push $FULL_IMAGE_NAME to docker hub  failed---------------"
+        exit
+    else
+        echo "---------------push $FULL_IMAGE_NAME to docker hub successfully---------------"
+    fi
+    
+    docker rmi $FULL_IMAGE_NAME
+    if [ $? -ne 0 ]; then
+        echo "---------------clear $FULL_IMAGE_NAME failed---------------"
+    else
+        echo "---------------clear $FULL_IMAGE_NAME successfully---------------"
+    fi
+    
+    seconds_left=20
+    echo "please wait for ${seconds_left}s, to ensure that the docker hub has synchronize the images successfully"
+    while [ $seconds_left -gt 0 ];do
+        echo -n $seconds_left
+        sleep 1
+        seconds_left=$(($seconds_left - 1))
+        echo -ne "\r     \r" #clear digital
+    done
+    
+    ssh user@ip.or.domain  /bin/bash /home/fuhong_tang_china/update.sh "$HUB/$APP" $VERSION
+    if [ $? -ne 0 ]; then
+        echo "---------------update finish failed---------------"
+        exit
+    else
+        echo "---------------update finish successfully---------------"
+    fi
     ```
 2. set docker hub Access Tokens, go to [https://hub.docker.com/settings/security](https://hub.docker.com/settings/security)
     ![hub](https://i.niupic.com/images/2020/08/04/8uwc.png)
@@ -232,7 +276,7 @@ ___
     
     echo "---------------successfully login to $USER---------------"
     
-    LAST_IMAGE=`cat /home/fuhong_tang_china/.lastImage.txt`
+    LAST_IMAGE=`cat /home/$USER/.lastImage.txt`
     echo "read last version image info successfully"
     
     HUB_APP=$1
@@ -250,21 +294,51 @@ ___
     
     if [[ $FULL_IMAGE_NAME = $LAST_IMAGE ]];
     then
-      echo "---------------last version is same with new new version, don't update---------------"
+      echo "---------------last version is same with new new version, no need update---------------"
       exit
     fi
     
+    docker logout
+    # to avoid Error response from daemon: Get https://registry-1.docker.io/v2/g6219700/love/manifests/v1: unauthorized: incorrect username or password
+    if [ $? -ne 0 ]; then
+        echo "---------------logout docker failed, that's fine---------------"
+    else
+        echo "---------------logout docker successfully---------------"
+    fi
+    
     docker pull $FULL_IMAGE_NAME
-    echo '---------------image pull finished---------------'
+    if [ $? -ne 0 ]; then
+        echo "---------------pull $FULL_IMAGE_NAME from hub failed---------------"
+        exit
+    else
+        echo "---------------pull $FULL_IMAGE_NAME from hub successfully---------------"
+    fi
     
     ImageId=`docker images | grep -E $HUB_APP | grep -E $VERSION | awk '{print $3}'`
-    echo "image id: $ImageId"
+    echo "image id: '$ImageId'"
+    
+    if [ $ImageId = '' ]; then
+        echo "---------------pull $FULL_IMAGE_NAME failed---------------"
+        exit
+    else
+        echo "successfully pull $FULL_IMAGE_NAME from hub"
+    fi
     
     docker rm -f backup
-    echo "---------------old server backup removed---------------"
+    if [ $? -ne 0 ]; then
+        echo "old server backup removed failed"
+        exit
+    else
+        echo "old server backup removed"
+    fi
     
     docker run -d --name backup -p 5999:5000  -e JWTSECRET=`yourjwtscript` -e DB_USERNAME=`dbusernmae` -e DB_PASSWORD=`dbpassword` -e DB_NAME=`dbname` $ImageId
-    echo "backup server started"
+    if [ $? -ne 0 ]; then
+        echo "backup server started failed"
+        exit
+    else
+        echo "backup server started"
+    fi
     
     seconds_left=10
     echo "please wait for ${seconds_left}s, to ensure that the backup server starts successfully"
@@ -278,25 +352,50 @@ ___
     echo '---------------counter down 10s, server mern1, mern2 start to remove---------------'
     
     docker rm -f mern1
-    echo "---------------server mern1 removed---------------"
+    if [ $? -ne 0 ]; then
+        echo "server mern1 removed failed"
+    else
+        echo "---------------server mern1 removed---------------"
+    fi
     
     docker rm -f mern2
-    echo "---------------server mern2 removed---------------"
+    if [ $? -ne 0 ]; then
+        echo "server mern2 removed failed"
+    else
+        echo "---------------server mern2 removed---------------"
+    fi
     
     docker run -d --name mern1 -p 5001:5000 -e JWTSECRET=`yourjwtscript` -e DB_USERNAME=`dbusernmae` -e DB_PASSWORD=`dbpassword` -e DB_NAME=`dbname` $ImageId
-    echo "---------------server mern1 started---------------"
+    if [ $? -ne 0 ]; then
+        echo "server mern1 started failed"
+    else
+        echo "---------------server mern1 started---------------"
+    fi
     
     docker run -d --name mern2 -p 5002:5000 -e JWTSECRET=`yourjwtscript` -e DB_USERNAME=`dbusernmae` -e DB_PASSWORD=`dbpassword` -e DB_NAME=`dbname` $ImageId
-    echo "---------------server mern2 started---------------"
+    if [ $? -ne 0 ]; then
+        echo "server mern2 started failed"
+    else
+        echo "---------------server mern2 started---------------"
+    fi
     
     docker rmi $LAST_IMAGE
-    echo "---------------old image removed---------------"
+    if [ $? -ne 0 ]; then
+        echo "---------------old image removed failed---------------"
+    else
+        echo "---------------old image removed---------------"
+    fi
     
-    echo $FULL_IMAGE_NAME > /home/fuhong_tang_china/.lastImage.txt
-    echo "---------------new image info written successfully---------------"
+    echo $FULL_IMAGE_NAME > /home/$USER/.lastImage.txt
+    if [ $? -ne 0 ]; then
+        echo "---------------new image info written failed---------------"
+    else
+        echo "---------------new image info written successfully---------------"
+    fi
     
     echo "---------------deploy finished---------------"
     echo "---------------new version is $FULL_IMAGE_NAME---------------"
+   
     ```
 
 7. Pull the first version image from docker hub at first time
