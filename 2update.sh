@@ -20,7 +20,7 @@ fi
 
 if [[ $FULL_IMAGE_NAME = $LAST_IMAGE ]];
 then
-  echo "---------------last version is same with new new version, don't update---------------"
+  echo "---------------last version is same with new new version, no need update---------------"
   exit
 fi
 
@@ -58,7 +58,7 @@ else
     echo "old server backup removed"
 fi
 
-docker run -d --name backup -p 5999:5000  -e JWTSECRET=yourjwtscript -e DB_USERNAME=todo -e DB_PASSWORD=adming -e DB_NAME=todoDB $ImageId
+docker run -d --name backup -p 5999:5000  -e JWTSECRET=`yourjwtscript` -e DB_USERNAME=`dbusernmae` -e DB_PASSWORD=`dbpassword` -e DB_NAME=`dbname` $ImageId
 if [ $? -ne 0 ]; then
     echo "backup server started failed"
     exit
@@ -91,14 +91,14 @@ else
     echo "---------------server mern2 removed---------------"
 fi
 
-docker run -d --name mern1 -p 5001:5000 -e JWTSECRET=yourjwtscript -e DB_USERNAME=todo -e DB_PASSWORD=adming -e DB_NAME=todoDB $ImageId
+docker run -d --name mern1 -p 5001:5000 -e JWTSECRET=`yourjwtscript` -e DB_USERNAME=`dbusernmae` -e DB_PASSWORD=`dbpassword` -e DB_NAME=`dbname` $ImageId
 if [ $? -ne 0 ]; then
     echo "server mern1 started failed"
 else
     echo "---------------server mern1 started---------------"
 fi
 
-docker run -d --name mern2 -p 5002:5000 -e JWTSECRET=yourjwtscript -e DB_USERNAME=todo -e DB_PASSWORD=adming -e DB_NAME=todoDB $ImageId
+docker run -d --name mern2 -p 5002:5000 -e JWTSECRET=`yourjwtscript` -e DB_USERNAME=`dbusernmae` -e DB_PASSWORD=`dbpassword` -e DB_NAME=`dbname` $ImageId
 if [ $? -ne 0 ]; then
     echo "server mern2 started failed"
 else

@@ -5,7 +5,8 @@ APP="love"
 
 if [[ $1 = '' ]];
 then
-  VERSION="latest"
+  echo "---------------please offer project version---------------"
+  exit
 else
   VERSION=$1
 fi

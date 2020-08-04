@@ -20,7 +20,7 @@ fi
 
 if [[ $FULL_IMAGE_NAME = $LAST_IMAGE ]];
 then
-  echo "---------------last version is same with new new version, don't update---------------"
+  echo "---------------last version is same with new new version, no need update---------------"
   exit
 fi
 
