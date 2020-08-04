@@ -317,4 +317,6 @@ ___
 ```shell script
    bash deploy.sh `your version0` # bash deploy.sh g6219700/mern:v1
 ```
-check your website and server to confirm whether it is deployed successfully.
+Check your website and server to confirm whether it is deployed successfully.
+
+Visit our project, please go to [http://34.72.111.143/](http://34.72.111.143/)
