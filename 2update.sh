@@ -25,7 +25,12 @@ then
 fi
 
 docker pull $FULL_IMAGE_NAME
-echo '---------------image pull finished---------------'
+if [ $? -ne 0 ]; then
+    echo "---------------pull $FULL_IMAGE_NAME from hub failed---------------"
+    exit
+else
+    echo "---------------pull $FULL_IMAGE_NAME from hub successfully---------------"
+fi
 
 ImageId=`docker images | grep -E $HUB_APP | grep -E $VERSION | awk '{print $3}'`
 echo "image id: '$ImageId'"

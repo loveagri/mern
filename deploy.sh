@@ -1,7 +1,7 @@
 #!/bin/bash
 
 HUB="g6219700"
-APP="mern"
+APP="merns"
 
 if [[ $1 = '' ]];
 then
