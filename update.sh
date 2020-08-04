@@ -1,4 +1,6 @@
-#!/usr/bin/env bash
+#!/bin/bash
+
+echo "---------------successfully login to $USER---------------"
 
 LAST_IMAGE=`cat /home/fuhong_tang_china/.lastImage.txt`
 echo "read last version image info successfully"
@@ -6,6 +8,9 @@ echo "read last version image info successfully"
 HUB_APP=$1
 VERSION=$2
 FULL_IMAGE_NAME="$HUB_APP:$VERSION"
+
+echo "====last image version info: $LAST_IMAGE===="
+echo "====new image version info: $FULL_IMAGE_NAME===="
 
 if [[ $1 = '' ]];
 then
