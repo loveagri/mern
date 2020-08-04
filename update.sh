@@ -2,7 +2,7 @@
 
 echo "---------------successfully login to $USER---------------"
 
-LAST_IMAGE=`cat /home/fuhong_tang_china/.lastImage.txt`
+LAST_IMAGE=`cat /home/$USER/.lastImage.txt`
 echo "read last version image info successfully"
 
 HUB_APP=$1
@@ -24,17 +24,47 @@ then
   exit
 fi
 
+docker logout
+# to avoid Error response from daemon: Get https://registry-1.docker.io/v2/g6219700/love/manifests/v1: unauthorized: incorrect username or password
+if [ $? -ne 0 ]; then
+    echo "---------------logout docker failed, that's fine---------------"
+else
+    echo "---------------logout docker successfully---------------"
+fi
+
 docker pull $FULL_IMAGE_NAME
-echo '---------------image pull finished---------------'
+if [ $? -ne 0 ]; then
+    echo "---------------pull $FULL_IMAGE_NAME from hub failed---------------"
+    exit
+else
+    echo "---------------pull $FULL_IMAGE_NAME from hub successfully---------------"
+fi
 
 ImageId=`docker images | grep -E $HUB_APP | grep -E $VERSION | awk '{print $3}'`
-echo "image id: $ImageId"
+echo "image id: '$ImageId'"
+
+if [ $ImageId = '' ]; then
+    echo "---------------pull $FULL_IMAGE_NAME failed---------------"
+    exit
+else
+    echo "successfully pull $FULL_IMAGE_NAME from hub"
+fi
 
 docker rm -f backup
-echo "---------------old server backup removed---------------"
+if [ $? -ne 0 ]; then
+    echo "old server backup removed failed"
+    exit
+else
+    echo "old server backup removed"
+fi
 
-docker run -d --name backup -p 5999:5000  -e JWTSECRET=`yourjwtscript` -e DB_USERNAME=`dbusernmae` -e DB_PASSWORD=`dbpassword` -e DB_NAME=`dbname` $ImageId
-echo "backup server started"
+docker run -d --name backup -p 5999:5000  -e JWTSECRET=yourjwtscript -e DB_USERNAME=todo -e DB_PASSWORD=adming -e DB_NAME=todoDB $ImageId
+if [ $? -ne 0 ]; then
+    echo "backup server started failed"
+    exit
+else
+    echo "backup server started"
+fi
 
 seconds_left=10
 echo "please wait for ${seconds_left}s, to ensure that the backup server starts successfully"
@@ -48,22 +78,46 @@ done
 echo '---------------counter down 10s, server mern1, mern2 start to remove---------------'
 
 docker rm -f mern1
-echo "---------------server mern1 removed---------------"
+if [ $? -ne 0 ]; then
+    echo "server mern1 removed failed"
+else
+    echo "---------------server mern1 removed---------------"
+fi
 
 docker rm -f mern2
-echo "---------------server mern2 removed---------------"
+if [ $? -ne 0 ]; then
+    echo "server mern2 removed failed"
+else
+    echo "---------------server mern2 removed---------------"
+fi
 
-docker run -d --name mern1 -p 5001:5000 -e JWTSECRET=`yourjwtscript` -e DB_USERNAME=`dbusernmae` -e DB_PASSWORD=`dbpassword` -e DB_NAME=`dbname` $ImageId
-echo "---------------server mern1 started---------------"
+docker run -d --name mern1 -p 5001:5000 -e JWTSECRET=yourjwtscript -e DB_USERNAME=todo -e DB_PASSWORD=adming -e DB_NAME=todoDB $ImageId
+if [ $? -ne 0 ]; then
+    echo "server mern1 started failed"
+else
+    echo "---------------server mern1 started---------------"
+fi
 
-docker run -d --name mern2 -p 5002:5000 -e JWTSECRET=`yourjwtscript` -e DB_USERNAME=`dbusernmae` -e DB_PASSWORD=`dbpassword` -e DB_NAME=`dbname` $ImageId
-echo "---------------server mern2 started---------------"
+docker run -d --name mern2 -p 5002:5000 -e JWTSECRET=yourjwtscript -e DB_USERNAME=todo -e DB_PASSWORD=adming -e DB_NAME=todoDB $ImageId
+if [ $? -ne 0 ]; then
+    echo "server mern2 started failed"
+else
+    echo "---------------server mern2 started---------------"
+fi
 
 docker rmi $LAST_IMAGE
-echo "---------------old image removed---------------"
+if [ $? -ne 0 ]; then
+    echo "---------------old image removed failed---------------"
+else
+    echo "---------------old image removed---------------"
+fi
 
-echo $FULL_IMAGE_NAME > /home/fuhong_tang_china/.lastImage.txt
-echo "---------------new image info written successfully---------------"
+echo $FULL_IMAGE_NAME > /home/$USER/.lastImage.txt
+if [ $? -ne 0 ]; then
+    echo "---------------new image info written failed---------------"
+else
+    echo "---------------new image info written successfully---------------"
+fi
 
 echo "---------------deploy finished---------------"
 echo "---------------new version is $FULL_IMAGE_NAME---------------"

@@ -59,6 +59,13 @@ else
     echo "---------------push $FULL_IMAGE_NAME to docker hub successfully---------------"
 fi
 
+docker rmi $FULL_IMAGE_NAME
+if [ $? -ne 0 ]; then
+    echo "---------------clear $FULL_IMAGE_NAME failed---------------"
+else
+    echo "---------------clear $FULL_IMAGE_NAME successfully---------------"
+fi
+
 seconds_left=20
 echo "please wait for ${seconds_left}s, to ensure that the docker hub has synchronize the images successfully"
 while [ $seconds_left -gt 0 ];do
