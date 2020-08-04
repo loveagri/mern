@@ -33,7 +33,7 @@ echo "---------------finish build docker image---------------"
 docker logout
 echo "---------------logout docker successfully---------------"
 
-docker login -u g6219700 -p 787a4aed-15f0-4979-b060-a3103343aba9
+cat .dockepwd | docker login --username g6219700 --password-stdin
 echo "---------------login docker successfully---------------"
 
 docker push $FULL_IMAGE_NAME
