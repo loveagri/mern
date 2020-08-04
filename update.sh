@@ -14,7 +14,7 @@ echo "====new image version info: $FULL_IMAGE_NAME===="
 
 if [[ $1 = '' ]];
 then
-  echo "---------------nee a full version info---------------"
+  echo "---------------need a full version info---------------"
   exit
 fi
 
@@ -35,6 +35,15 @@ echo "---------------old server backup removed---------------"
 
 docker run -d --name backup -p 5999:5000  -e JWTSECRET=secret -e DB_USERNAME=todo -e DB_PASSWORD=adming -e DB_NAME=todoDB $ImageId
 echo "backup server started"
+
+seconds_left=10
+echo "please wait for${seconds_left}s……, to ensure that the backup server starts successfully"
+while [ $seconds_left -gt 0 ];do
+    echo -n $seconds_left
+    sleep 1
+    seconds_left=$(($seconds_left - 1))
+    echo -ne "\r     \r" #clear digital
+done
 
 docker rm -f mern1
 echo "---------------server mern1 removed---------------"

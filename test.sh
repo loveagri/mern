@@ -2,12 +2,11 @@
 
 
 
-
-#ImageId='e8982a06b7629914f243367ba45b36d77a3458e33b211176879b4148c'
-#docker run -d --name backup -p 5999:5000  -e JWTSECRET=secret -e DB_USERNAME=todo -e DB_PASSWORD=adming -e DB_NAME=todoDB 1abf6c47f756
-#docker run -d --name mern1 -p 5001:5000 -e JWTSECRET=secret -e DB_USERNAME=todo -e DB_PASSWORD=adming -e DB_NAME=todoDB 1abf6c47f756
-#docker run -d --name mern2 -p 5002:5000 -e JWTSECRET=secret -e DB_USERNAME=todo -e DB_PASSWORD=adming -e DB_NAME=todoDB 1abf6c47f756
-
-
-REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
-g6219700/mern       v2                  3afc8b335df6        27 minutes ago      703MB
+seconds_left=10
+echo "please wait for${seconds_left}s……, to ensure that the backup server starts successfully"
+while [ $seconds_left -gt 0 ];do
+    echo -n $seconds_left
+    sleep 1
+    seconds_left=$(($seconds_left - 1))
+    echo -ne "\r     \r" #clear digital
+done

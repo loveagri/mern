@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 HUB="g6219700"
 APP="mern"
@@ -15,7 +15,7 @@ FULL_IMAGE_NAME="$HUB/$APP:$VERSION"
 echo "---------------full name: $FULL_IMAGE_NAME---------------"
 
 #recover unsubmit code
-#git checkout .
+git checkout .
 echo '---------------finish checkout---------------'
 
 #pull from remote repository
