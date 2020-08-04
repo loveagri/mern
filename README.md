@@ -118,53 +118,58 @@ ___
     CMD ["yarn", "server"]
     ```
 
-### Build automated build release script `deploy.sh`.
-    
+### Build automated build release script `deploy.sh` and docker auth key
+1. deploy.sh, don't forget to set you server user and ip or domain
+    ```shell script
     #!/bin/bash
-    
-    HUB="hub username"
-    APP="project name"
-    
-    if [[ $1 = '' ]];
-    then
-      VERSION="latest"
-    else
-      VERSION=$1
-    fi
-    
-    #join full app name
-    FULL_IMAGE_NAME="$HUB/$APP:$VERSION"
-    echo "---------------full name: $FULL_IMAGE_NAME---------------"
-    
-    #recover unsubmit code
-    git checkout .
-    echo '---------------finish checkout---------------'
-    
-    #pull from remote repository
-    git pull
-    echo '---------------finish pull from remote repository---------------'
-    
-    #install modules and package code of client
-    yarn install
-    yarn heroku-postbuild
-    echo "---------------finish install js libraries and build project---------------"
-    
-    docker build -t $FULL_IMAGE_NAME .
-    echo "---------------finish build docker image---------------"
-    
-    docker logout
-    echo "---------------logout docker successfully---------------"
-    
-    cat .dockepwd | docker login --username g6219700 --password-stdin
-    echo "---------------login docker successfully---------------"
-    
-    docker push $FULL_IMAGE_NAME
-    echo "---------------push to docker hub successfully---------------"
-    
-    ssh user@server.ip  /bin/bash /home/fuhong_tang_china/update.sh "$HUB/$APP" $VERSION
-    echo "---------------login to remote server successfully---------------"
-    
-now, all local config done.
+        
+        HUB="hub username"
+        APP="project name"
+        
+        if [[ $1 = '' ]];
+        then
+          VERSION="latest"
+        else
+          VERSION=$1
+        fi
+        
+        #join full app name
+        FULL_IMAGE_NAME="$HUB/$APP:$VERSION"
+        echo "---------------full name: $FULL_IMAGE_NAME---------------"
+        
+        #recover unsubmit code
+        git checkout .
+        echo '---------------finish checkout---------------'
+        
+        #pull from remote repository
+        git pull
+        echo '---------------finish pull from remote repository---------------'
+        
+        #install modules and package code of client
+        yarn install
+        yarn heroku-postbuild
+        echo "---------------finish install js libraries and build project---------------"
+        
+        docker build -t $FULL_IMAGE_NAME .
+        echo "---------------finish build docker image---------------"
+        
+        docker logout
+        echo "---------------logout docker successfully---------------"
+        
+        cat .dockepwd | docker login --username g6219700 --password-stdin
+        echo "---------------login docker successfully---------------"
+        
+        docker push $FULL_IMAGE_NAME
+        echo "---------------push to docker hub successfully---------------"
+        
+        ssh user@server.ip  /bin/bash /home/fuhong_tang_china/update.sh "$HUB/$APP" $VERSION
+        echo "---------------login to remote server successfully---------------"
+    ```
+2. set docker hub Access Tokens, go to [https://hub.docker.com/settings/security](https://hub.docker.com/settings/security)
+    ![hub](https://i.niupic.com/images/2020/08/04/8uwc.png)
+    at last, create a '.dockerpwd' at the same document with deploy.sh file to store the docker hub Access Tokens, then shell command can read this file content
+#### now, all local config done.
+___
 ## Deployment server
 ### Create GCP server and open a terminal
 1. Update apt libraries
@@ -303,9 +308,14 @@ now, all local config done.
     docker run -d --name mern1 -p 5001:5000 -e JWTSECRET=`yourjwtscript` -e DB_USERNAME=`dbusernmae` -e DB_PASSWORD=`dbpassword` -e DB_NAME=`dbname` `version0ImageId`
     docker run -d --name mern2 -p 5002:5000 -e JWTSECRET=`yourjwtscript` -e DB_USERNAME=`dbusernmae` -e DB_PASSWORD=`dbpassword` -e DB_NAME=`dbname` `version0ImageId`
     ``` 
+    
+    Creating a file named `.lastImage.txt` to store the last image information at the same document with update.sh, at first time, you should write the first version image information to `.lastImage.txt` like 'hubusername/project:version0'
+    
+#### now, docker config finished
+___
 
-    now, docker config finished
-
-8. Setting auth code, add publish key to aut 
-
-
+## last step, go to the root of you project and run
+```shell script
+   bash deploy.sh `your version0` # bash deploy.sh g6219700/mern:v1
+```
+check your website and server to confirm whether it is deployed successfully.

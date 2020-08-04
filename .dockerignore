@@ -11,6 +11,6 @@ LICENSE
 .env
 client
 !client/build/
-.dockepwd
+.dockerpwd
 deploy.sh
 update.sh
