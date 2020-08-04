@@ -37,7 +37,12 @@ cat .dockerpwd | docker login --username g6219700 --password-stdin
 echo "---------------login docker successfully---------------"
 
 docker push $FULL_IMAGE_NAME
-echo "---------------push to docker hub successfully---------------"
+if [ $? -ne 0 ]; then
+    echo "---------------push $FULL_IMAGE_NAME to docker hub  ailed---------------"
+    exit
+else
+    echo "---------------push $FULL_IMAGE_NAME to docker hub successfully---------------"
+fi
 
 ssh fuhong_tang_china@34.72.111.143  /bin/bash /home/fuhong_tang_china/update.sh "$HUB/$APP" $VERSION
 echo "---------------login to remote server successfully---------------"
