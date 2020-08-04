@@ -16,17 +16,18 @@ echo "---------------full name: $FULL_IMAGE_NAME---------------"
 
 #recover unsubmit code
 git checkout .
-echo '---------------finish checkout---------------'
+echo "---------------finish checkout---------------"
 
 #pull from remote repository
 git pull
-echo '---------------finish pull from remote repository---------------'
+echo "---------------finish pull from remote repository---------------"
 
 #install modules and package code of client
 yarn install
 yarn heroku-postbuild
 echo "---------------finish install js libraries and build project---------------"
 
+echo "---------------start to build docker image......---------------"
 docker build -t $FULL_IMAGE_NAME .
 if [ $? -ne 0 ]; then
     echo "---------------build docker image failed---------------"
@@ -58,6 +59,15 @@ else
     echo "---------------push $FULL_IMAGE_NAME to docker hub successfully---------------"
 fi
 
+seconds_left=20
+echo "please wait for ${seconds_left}s, to ensure that the docker hub has synchronize the images successfully"
+while [ $seconds_left -gt 0 ];do
+    echo -n $seconds_left
+    sleep 1
+    seconds_left=$(($seconds_left - 1))
+    echo -ne "\r     \r" #clear digital
+done
+
 ssh fuhong_tang_china@34.72.111.143  /bin/bash /home/fuhong_tang_china/update.sh "$HUB/$APP" $VERSION
 if [ $? -ne 0 ]; then
     echo "---------------update finish failed---------------"
@@ -65,19 +75,3 @@ if [ $? -ne 0 ]; then
 else
     echo "---------------update finish successfully---------------"
 fi
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
