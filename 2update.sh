@@ -30,6 +30,13 @@ echo '---------------image pull finished---------------'
 ImageId=`docker images | grep -E $HUB_APP | grep -E $VERSION | awk '{print $3}'`
 echo "image id: $ImageId"
 
+if [ $ImageId = '' ]; then
+    echo "---------------pull $FULL_IMAGE_NAME failed---------------"
+    exit
+else
+    echo "old server backup removed"
+fi
+
 docker rm -f backup
 if [ $? -ne 0 ]; then
     echo "old server backup removed failed"
