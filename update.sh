@@ -33,7 +33,7 @@ echo "image id: $ImageId"
 docker rm -f backup
 echo "---------------old server backup removed---------------"
 
-docker run -d --name backup -p 5999:5000  -e JWTSECRET=secret -e DB_USERNAME=todo -e DB_PASSWORD=adming -e DB_NAME=todoDB $ImageId
+docker run -d --name backup -p 5999:5000  -e JWTSECRET=`yourjwtscript` -e DB_USERNAME=`dbusernmae` -e DB_PASSWORD=`dbpassword` -e DB_NAME=`dbname` $ImageId
 echo "backup server started"
 
 seconds_left=10
@@ -53,10 +53,10 @@ echo "---------------server mern1 removed---------------"
 docker rm -f mern2
 echo "---------------server mern2 removed---------------"
 
-docker run -d --name mern1 -p 5001:5000 -e JWTSECRET=secret -e DB_USERNAME=todo -e DB_PASSWORD=adming -e DB_NAME=todoDB $ImageId
+docker run -d --name mern1 -p 5001:5000 -e JWTSECRET=`yourjwtscript` -e DB_USERNAME=`dbusernmae` -e DB_PASSWORD=`dbpassword` -e DB_NAME=`dbname` $ImageId
 echo "---------------server mern1 started---------------"
 
-docker run -d --name mern2 -p 5002:5000 -e JWTSECRET=secret -e DB_USERNAME=todo -e DB_PASSWORD=adming -e DB_NAME=todoDB $ImageId
+docker run -d --name mern2 -p 5002:5000 -e JWTSECRET=`yourjwtscript` -e DB_USERNAME=`dbusernmae` -e DB_PASSWORD=`dbpassword` -e DB_NAME=`dbname` $ImageId
 echo "---------------server mern2 started---------------"
 
 docker rmi $LAST_IMAGE
