@@ -214,7 +214,7 @@ ___
 #### now, all local config done.
 ___
 ## Deployment server
-### Create GCP server and open a ssh terminal
+### Create an GCP server instance and open a ssh terminal
 1. Update apt libraries
     ```shell script
     apt update && apt upgrade
