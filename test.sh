@@ -1,0 +1,1 @@
+ssh fuhong_tang_china@34.72.111.143 sh ~/update.sh $FULL_APP_NAME
