@@ -1,7 +1,7 @@
 #!/bin/bash
 
 HUB="g6219700"
-APP="merns"
+APP="love"
 
 if [[ $1 = '' ]];
 then
@@ -60,10 +60,10 @@ fi
 
 ssh fuhong_tang_china@34.72.111.143  /bin/bash /home/fuhong_tang_china/update.sh "$HUB/$APP" $VERSION
 if [ $? -ne 0 ]; then
-    echo "---------------login to remote server failed---------------"
+    echo "---------------update finish failed---------------"
     exit
 else
-    echo "---------------login to remote server successfully---------------"
+    echo "---------------update finish successfully---------------"
 fi
 
 
