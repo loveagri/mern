@@ -24,6 +24,14 @@ then
   exit
 fi
 
+docker logout
+# to avoid Error response from daemon: Get https://registry-1.docker.io/v2/g6219700/love/manifests/v1: unauthorized: incorrect username or password
+if [ $? -ne 0 ]; then
+    echo "---------------logout docker failed, that's fine---------------"
+else
+    echo "---------------logout docker successfully---------------"
+fi
+
 docker pull $FULL_IMAGE_NAME
 if [ $? -ne 0 ]; then
     echo "---------------pull $FULL_IMAGE_NAME from hub failed---------------"
