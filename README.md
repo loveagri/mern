@@ -1,9 +1,8 @@
 # Automatically deploy docker on GCP
-___
 
 ## propare project
 
-### Fork the “hemakshis/Basic-MERN-Stack-App” to our own repository and clone it to local and rename mern
+### Fork the “hemakshis/Basic-MERN-Stack-App” to our own repository and clone it to local and rename `mern`
 
 ### Clone the project to the local
 ```shell script
@@ -71,10 +70,10 @@ ___
 2. Copy id_rsa.pub content to GCP server ~/.ssh/authorized_keys (append not replace), if authorized_keys not exist, pls create.
     ```shell script
     # For ordinary users, it is recommended to set the permissions to 600: 
-    chmod 600 authorized_keys id_rsa id_rsa.pub;
+    chmod 600 authorized_keys id_rsa id_rsa.pub
     
     # For root users, it is recommended to set 644 permissions: 
-    chmod 644 authorized_keys id_rsa id_rsa.pub.
+    chmod 644 authorized_keys id_rsa id_rsa.pub
    ```
    ```
    [root@localhost .ssh]# cat authorized_keys 
@@ -118,8 +117,8 @@ ___
     CMD ["yarn", "server"]
     ```
 
-### Build automated build release script `deploy.sh` and docker auth key
-1. deploy.sh, don't forget to set you server user and ip or domain
+### Build automated build release script `deploy.sh` and set docker access token
+1. deploy.sh, don't forget to set you server user and ip or domain, your docker hub name, app name and 
     ```shell script
     #!/bin/bash
         
@@ -171,7 +170,7 @@ ___
 #### now, all local config done.
 ___
 ## Deployment server
-### Create GCP server and open a terminal
+### Create GCP server and open a ssh terminal
 1. Update apt libraries
     ```shell script
     apt update && apt upgrade
@@ -227,7 +226,7 @@ ___
     sudo nginx
     ```
 
-6. Create update.sh to home directory
+6. Create update.sh at home directory
     ```shell script
     #!/bin/bash
     
@@ -314,7 +313,7 @@ ___
 #### now, docker config finished
 ___
 
-## last step, go to the root of you project and run
+## Last step, go to the root of your project and run
 ```shell script
    bash deploy.sh `your version0` # bash deploy.sh g6219700/mern:v1
 ```
