@@ -39,7 +39,7 @@ echo "---------------login docker successfully---------------"
 docker push $FULL_IMAGE_NAME
 echo "---------------push to docker hub successfully---------------"
 
-ssh fuhong_tang_china@34.72.111.143  /bin/sh /home/fuhong_tang_china/update.sh "$HUB/$APP" $VERSION
+ssh fuhong_tang_china@34.72.111.143  /bin/bash /home/fuhong_tang_china/update.sh "$HUB/$APP" $VERSION
 echo "---------------login to remote server successfully---------------"
 
 
