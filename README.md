@@ -101,12 +101,12 @@ ___
     .idea
     .env
     client
-    !client/build/
     .dockerpwd
     deploy.sh
     update.sh
     deploy-readme.sh
     update-readme.sh
+    !client/build/
     ```
 2. build `Dockerfile` file
     ```shell script
