@@ -23,11 +23,6 @@ echo "---------------finish checkout---------------"
 git pull
 echo "---------------finish pull from remote repository---------------"
 
-#install modules and package code of client
-yarn install
-yarn heroku-postbuild
-echo "---------------finish install js libraries and build project---------------"
-
 echo "---------------start to build docker image......---------------"
 docker build -t $FULL_IMAGE_NAME .
 if [ $? -ne 0 ]; then

@@ -4,4 +4,6 @@ WORKDIR /mid-term-project/mern/
 COPY . .
 RUN yarn install
 EXPOSE 5000
+CMD ["yarn", "install"]
+CMD ["yarn", "heroku-postbuild"]
 CMD ["yarn", "server"]

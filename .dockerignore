@@ -9,10 +9,10 @@ LICENSE
 .vscode
 .idea
 .env
-client
+client/node_modules/
+client/build/
 .dockerpwd
 deploy.sh
 update.sh
 deploy-readme.sh
 update-readme.sh
-!client/build/
