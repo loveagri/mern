@@ -276,7 +276,12 @@ ___
     
     echo "---------------successfully login to $USER---------------"
     
-    LAST_IMAGE=`cat /home/$USER/.lastImage.txt`
+    JWTSECRET='yourjwtscript'
+    DB_USERNAME=`username`
+    DB_PASSWORD=`password`
+    DB_NAME=`db_name`
+   
+     LAST_IMAGE=`cat /home/$USER/.lastImage.txt`
     echo "read last version image info successfully"
     
     HUB_APP=$1
@@ -332,7 +337,7 @@ ___
         echo "old server backup removed"
     fi
     
-    docker run -d --name backup -p 5999:5000  -e JWTSECRET=`yourjwtscript` -e DB_USERNAME=`dbusernmae` -e DB_PASSWORD=`dbpassword` -e DB_NAME=`dbname` $ImageId
+    docker run -d --name backup -p 5999:5000  -e JWTSECRET=$JWTSECRET -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=$DB_PASSWORD -e DB_NAME=$DB_NAME $ImageId
     if [ $? -ne 0 ]; then
         echo "backup server started failed"
         exit
@@ -365,14 +370,14 @@ ___
         echo "---------------server mern2 removed---------------"
     fi
     
-    docker run -d --name mern1 -p 5001:5000 -e JWTSECRET=`yourjwtscript` -e DB_USERNAME=`dbusernmae` -e DB_PASSWORD=`dbpassword` -e DB_NAME=`dbname` $ImageId
+    docker run -d --name mern1 -p 5001:5000 -e JWTSECRET=$JWTSECRET -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=$DB_PASSWORD -e DB_NAME=$DB_NAME $ImageId
     if [ $? -ne 0 ]; then
         echo "server mern1 started failed"
     else
         echo "---------------server mern1 started---------------"
     fi
     
-    docker run -d --name mern2 -p 5002:5000 -e JWTSECRET=`yourjwtscript` -e DB_USERNAME=`dbusernmae` -e DB_PASSWORD=`dbpassword` -e DB_NAME=`dbname` $ImageId
+    docker run -d --name mern2 -p 5002:5000 -e JWTSECRET=$JWTSECRET -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=$DB_PASSWORD -e DB_NAME=$DB_NAME $ImageId
     if [ $? -ne 0 ]; then
         echo "server mern2 started failed"
     else

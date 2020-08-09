@@ -2,6 +2,11 @@
 
 echo "---------------successfully login to $USER---------------"
 
+JWTSECRET='yourjwtscript'
+DB_USERNAME='todo'
+DB_PASSWORD='adming'
+DB_NAME='todoDB'
+
 LAST_IMAGE=`cat /home/$USER/.lastImage.txt`
 echo "read last version image info successfully"
 
@@ -58,7 +63,7 @@ else
     echo "old server backup removed"
 fi
 
-docker run -d --name backup -p 5999:5000  -e JWTSECRET=yourjwtscript -e DB_USERNAME=todo -e DB_PASSWORD=adming -e DB_NAME=todoDB $ImageId
+docker run -d --name backup -p 5999:5000  -e JWTSECRET=$JWTSECRET -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=$DB_PASSWORD -e DB_NAME=$DB_NAME $ImageId
 if [ $? -ne 0 ]; then
     echo "backup server started failed"
     exit
@@ -91,14 +96,14 @@ else
     echo "---------------server mern2 removed---------------"
 fi
 
-docker run -d --name mern1 -p 5001:5000 -e JWTSECRET=yourjwtscript -e DB_USERNAME=todo -e DB_PASSWORD=adming -e DB_NAME=todoDB $ImageId
+docker run -d --name mern1 -p 5001:5000 -e JWTSECRET=$JWTSECRET -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=$DB_PASSWORD -e DB_NAME=$DB_NAME $ImageId
 if [ $? -ne 0 ]; then
     echo "server mern1 started failed"
 else
     echo "---------------server mern1 started---------------"
 fi
 
-docker run -d --name mern2 -p 5002:5000 -e JWTSECRET=yourjwtscript -e DB_USERNAME=todo -e DB_PASSWORD=adming -e DB_NAME=todoDB $ImageId
+docker run -d --name mern2 -p 5002:5000 -e JWTSECRET=$JWTSECRET -e DB_USERNAME=$DB_USERNAME -e DB_PASSWORD=$DB_PASSWORD -e DB_NAME=$DB_NAME $ImageId
 if [ $? -ne 0 ]; then
     echo "server mern2 started failed"
 else
