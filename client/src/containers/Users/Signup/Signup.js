@@ -145,7 +145,7 @@ class Signup extends Component {
         return (
             <div className="container">
                 <br />
-                <h3 className="text-center">test docker</h3>
+                <h3 className="text-center">Join Our Community!</h3>
                 <div className="jumbotron">
                     <form onSubmit={this.handleSignup}>
                         { inputFields }
