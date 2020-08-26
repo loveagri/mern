@@ -28,6 +28,13 @@ yarn install
 yarn heroku-postbuild
 echo "---------------finish install js libraries and build project---------------"
 
+docker logout
+if [ $? -ne 0 ]; then
+    echo "---------------logout docker failed, that's fine---------------"
+else
+    echo "---------------logout docker successfully---------------"
+fi
+
 echo "---------------start to build docker image......---------------"
 docker build -t $FULL_IMAGE_NAME .
 if [ $? -ne 0 ]; then
@@ -35,13 +42,6 @@ if [ $? -ne 0 ]; then
     exit
 else
     echo "---------------build docker image successfully--------------"
-fi
-
-docker logout
-if [ $? -ne 0 ]; then
-    echo "---------------logout docker failed, that's fine---------------"
-else
-    echo "---------------logout docker successfully---------------"
 fi
 
 cat .dockerpwd | docker login --username g6219700 --password-stdin
