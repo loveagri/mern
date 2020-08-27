@@ -81,7 +81,7 @@ ___
     ```
     congratulations, now, you can login server without password
     
-3. Copy ir_rsa.pub to set git SSH key
+3. Copy id_rsa.pub to set git SSH key
     ![git](https://i.niupic.com/images/2020/08/04/8uvL.png)
     
     now, you can push code without password
